@@ -45,14 +45,42 @@ By the end of this lesson, you will be able to:
 ### **Exercise 1: Basic Thread Creation**
 
 - **Description**: Write a program that creates two threads, each printing a message along with its thread ID.
-- **Hint**: Use `pthread_self()` to retrieve the current thread ID.
+- **Hint**: The program creates two threads, each printing a message along with its thread ID. The `pthread_join` function ensures that the main program waits for both threads to complete before exiting.
+
+### `pthread_create`
+
+Used to create a new thread.
+
+**Syntax:**
 
 ```c
-void *print_message(void *arg) {
-    printf("Thread ID: %lu\n", pthread_self());
-    return NULL;
-}
+int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine)(void *), void *arg);
 ```
+
+**Parameters:**
+
+- `thread`: Pointer to a `pthread_t` variable to store the thread ID.
+- `attr`: Thread attributes (can be `NULL` for default settings).
+- `start_routine`: The function to be executed by the thread.
+- `arg`: Argument passed to the function (can be `NULL`).
+
+### `pthread_join`
+
+Used to wait for a thread to complete.
+
+**Syntax:**
+
+```c
+int pthread_join(pthread_t thread, void **retval);
+```
+
+When a thread finishes (either by returning from the function or calling `pthread_exit`), `pthread_join` ensures that the main program collects its result before proceeding.
+
+### When does a thread terminate?
+
+- When the function inside the thread completes (`return`).
+- When `pthread_exit()` is called.
+- When the main program exits before calling `pthread_join` (which can cause issues if threads are still running).
 
 ### **Exercise 2: Thread Synchronization with Mutex**
 
@@ -72,6 +100,17 @@ void *increment(void *arg) {
     return NULL;
 }
 ```
+
+## Why is a Mutex Needed in This Program?
+
+In a multi-threaded program, when multiple threads access and modify a shared variable simultaneously, race conditions can occur. A race condition happens when multiple threads attempt to update a shared resource at the same time, leading to unpredictable results.
+
+Using a mutex (mutual exclusion) ensures that only one thread at a time modifies the shared variable, preventing race conditions and ensuring data integrity.
+
+### What happens if we remove the mutex?
+
+- Without a mutex, multiple threads might read the same value of `counter` and increment it simultaneously, leading to incorrect results.
+- The final value of `counter` may be less than the expected value due to lost updates.
 
 ### **Exercise 3: Synchronizing Producer-Consumer**
 
