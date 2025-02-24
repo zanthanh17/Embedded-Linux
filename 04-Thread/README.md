@@ -47,7 +47,7 @@ By the end of this lesson, you will be able to:
 - **Description**: Write a program that creates two threads, each printing a message along with its thread ID.
 - **Hint**: The program creates two threads, each printing a message along with its thread ID. The `pthread_join` function ensures that the main program waits for both threads to complete before exiting.
 
-### `pthread_create`
+#### `pthread_create`
 
 Used to create a new thread.
 
@@ -64,7 +64,7 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_
 - `start_routine`: The function to be executed by the thread.
 - `arg`: Argument passed to the function (can be `NULL`).
 
-### `pthread_join`
+#### `pthread_join`
 
 Used to wait for a thread to complete.
 
@@ -76,7 +76,7 @@ int pthread_join(pthread_t thread, void **retval);
 
 When a thread finishes (either by returning from the function or calling `pthread_exit`), `pthread_join` ensures that the main program collects its result before proceeding.
 
-### When does a thread terminate?
+#### When does a thread terminate?
 
 - When the function inside the thread completes (`return`).
 - When `pthread_exit()` is called.
@@ -101,13 +101,13 @@ void *increment(void *arg) {
 }
 ```
 
-## Why is a Mutex Needed in This Program?
+#### Why is a Mutex Needed in This Program?
 
 In a multi-threaded program, when multiple threads access and modify a shared variable simultaneously, race conditions can occur. A race condition happens when multiple threads attempt to update a shared resource at the same time, leading to unpredictable results.
 
 Using a mutex (mutual exclusion) ensures that only one thread at a time modifies the shared variable, preventing race conditions and ensuring data integrity.
 
-### What happens if we remove the mutex?
+#### What happens if we remove the mutex?
 
 - Without a mutex, multiple threads might read the same value of `counter` and increment it simultaneously, leading to incorrect results.
 - The final value of `counter` may be less than the expected value due to lost updates.
@@ -131,13 +131,14 @@ Using a mutex (mutual exclusion) ensures that only one thread at a time modifies
 
 ## Instructions to Build and Run Exercises
 
-| Exercise | Directory | Compile Command               | Run Command | Clean Build Files |
-| -------- | --------- | ----------------------------- | ----------- | ----------------- |
-| BT1      | `BT1/`    | `make`                        | `./main`    | `make clean`      |
-| BT2      | `BT2/`    | `make`                        | `./main`    | `make clean`      |
-| BT3      | `BT3/`    | `make`                        | `./main`    | `make clean`      |
-| BT4      | `BT4/`    | `make`                        | `./main`    | `make clean`      |
-| BT5      | `BT5/`    | `gcc -o main main.c -pthread` | `./main`    | `rm main`         |
+| Exercise | Directory                 | Compile Command | Run Command | Clean Build Files |
+| -------- | ------------------------- | --------------- | ----------- | ----------------- |
+| EX1      | `threads_created/`        | `make`          | `./ex1`     | `make clean`      |
+| EX2      | `threads_sync_mutex/`     | `make`          | `./ex2`     | `make clean`      |
+| EX3      | `threads_condition_vars/` | `make`          | `./ex3`     | `make clean`      |
+| EX4      | `threads_even_odd/`       | `make`          | `./ex4`     | `make clean`      |
+| EX5      | `threads_rw_resource/`    | `make`          | `./ex5`     | `rm main`         |
+| EX6      | `threads_sum_mutex/`      | `make`          | `./ex6`     | `rm main`         |
 
 ---
 
