@@ -127,6 +127,56 @@ Using a mutex (mutual exclusion) ensures that only one thread at a time modifies
 - **Description**: Create 5 reader threads and 2 writer threads accessing a shared `data` variable.
 - **Hint**: Use `pthread_rwlock_rdlock` to allow multiple readers concurrently.
 
+#### Code Explanation
+
+##### Global Variables:
+
+- `data`: Shared integer variable.
+- `pthread_rwlock_t rwlock`: Read-write lock to manage access.
+
+##### Functions:
+
+1. **`reader(void *arg)`**:
+
+   - Acquires a read lock using `pthread_rwlock_rdlock`.
+   - Reads and prints the current value of `data`.
+   - Releases the read lock using `pthread_rwlock_unlock`.
+   - Simulates processing delay using `usleep`.
+
+2. **`writer(void *arg)`**:
+   - Acquires a write lock using `pthread_rwlock_wrlock`.
+   - Increments `data` and prints the updated value.
+   - Releases the write lock using `pthread_rwlock_unlock`.
+   - Simulates processing delay using `usleep`.
+
+##### Main Function:
+
+1. Initializes the read-write lock.
+2. Creates `READERS` reader threads and `WRITERS` writer threads.
+3. Waits for all threads to complete using `pthread_join`.
+4. Destroys the read-write lock.
+5. Prints the final value of `data`.
+
+#### Expected Output
+
+```
+Reader 1 reads data: 0
+Reader 2 reads data: 0
+Writer 1 updates data to: 1
+Reader 3 reads data: 1
+Reader 4 reads data: 1
+Writer 2 updates data to: 2
+...
+Final data value: <some integer>
+```
+
+(Note: The actual output may vary depending on thread scheduling.)
+
+#### Notes
+
+- The `usleep()` function introduces artificial delays to simulate real-world processing.
+- Read-write locks improve performance by allowing concurrent reads while ensuring safe writes.
+
 ---
 
 ## Instructions to Build and Run Exercises
