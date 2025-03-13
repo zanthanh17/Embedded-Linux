@@ -84,6 +84,8 @@ Example:
 | Command                | Description |
 |------------------------|-------------|
 | `help`                | Show available commands |
+| `myip`                | Show the IP address |
+| `myport`              | Show port |
 | `connect <ip> <port>` | Connect to a peer at the specified IP and port |
 | `send <id> <message>` | Send a message to the specified connection ID |
 | `list`                | List all active connections |
