@@ -4,6 +4,7 @@
 #include "../inc/cli.h"         // @include Header file for CLI functions
 #include "../inc/connection.h"  // @include Header file for connection-related functions
 #include "../inc/utils.h"       // @include Header file for utility functions
+#include "../inc/network.h"
 
 // @function show_help
 // @brief Displays the list of available commands
@@ -13,11 +14,13 @@ void show_help() {
     printf(ANSI_COLOR_GREEN "Available commands:\n" ANSI_COLOR_RESET);  // @print Displays the header in green
     printf(ANSI_COLOR_CYAN "-------------------------------------------------\n" ANSI_COLOR_RESET);  // @print Separator line in cyan
     printf(ANSI_COLOR_YELLOW "help              - Show this help message\n");  // @print Help command description in yellow
-    printf("connect <ip> <port> - Connect to a peer\n");  // @print Connect command description
+    printf("myip                - Connect to a peer\n");  // @print Connect command description
+    printf("myport              - Displays the IP address\n");  // @print Connect command description
+    printf("connect <ip> <port> - Display port\n");  // @print Connect command description
     printf("send <id> <message> - Send message to a connection\n");  // @print Send command description
-    printf("list              - List all active connections\n");  // @print List command description
-    printf("terminate <id>    - Terminate a connection\n");  // @print Terminate command description
-    printf("exit              - Exit the application\n");  // @print Exit command description
+    printf("list                - List all active connections\n");  // @print List command description
+    printf("terminate <id>      - Terminate a connection\n");  // @print Terminate command description
+    printf("exit                - Exit the application\n");  // @print Exit command description
     printf(ANSI_COLOR_CYAN "-------------------------------------------------\n" ANSI_COLOR_RESET);  // @print Separator line in cyan
     draw_border();                                      // @call Draws a closing border
 }
@@ -35,6 +38,16 @@ void process_command(char *command) {
     if (sscanf(command, "%s %s %s", cmd, arg1, arg2) >= 1) {  // @call Parses the command string into cmd, arg1, and arg2
         if (strcmp(cmd, "help") == 0) {                     // @if Checks if the command is "help"
             show_help();                                    // @call Displays the help menu
+        }else if (strcmp(cmd, "myip") == 0) {              // @if Checks if the command is "myip"
+            char my_ip[INET_ADDRSTRLEN];                    // @var Buffer to store the local IP
+            get_my_ip(my_ip);                               // @call Retrieves the local IP
+            draw_border();                                  // @call Draws a border
+            printf(ANSI_COLOR_GREEN "Local IP: " ANSI_COLOR_MAGENTA "%s\n" ANSI_COLOR_RESET, my_ip);  // @print Displays the IP
+            draw_border();                                  // @call Draws a closing border
+        } else if (strcmp(cmd, "myport") == 0) {            // @if Checks if the command is "myport"
+            draw_border();                                  // @call Draws a border
+            printf(ANSI_COLOR_GREEN "Listening on port: " ANSI_COLOR_MAGENTA "%d\n" ANSI_COLOR_RESET, listening_port);  // @print Displays the port
+            draw_border();
         } else if (strcmp(cmd, "connect") == 0) {           // @if Checks if the command is "connect"
             int port = atoi(arg2);                          // @convert Converts the second argument to an integer port
             result = connect_to_peer(arg1, port);           // @call Initiates a connection to the specified peer
