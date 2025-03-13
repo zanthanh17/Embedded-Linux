@@ -175,7 +175,3 @@ Alternatively, use a different port:
 ## License
 This project is licensed under the **MIT License**.
 
----
-
-## Author
-Developed as part of an **Embedded Linux Systems** study focusing on **network programming, multithreading, and inter-process communication**.
