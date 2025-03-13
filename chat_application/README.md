@@ -1,182 +1,181 @@
 # Chat Application
 
 ## Overview
+The **Chat Application** is a peer-to-peer (P2P) chat system implemented in C for embedded Linux systems. It allows multiple instances to communicate over a network, supporting features like:
 
-The Chat Application is a peer-to-peer (P2P) chat system implemented in C for embedded Linux systems. It allows multiple instances to communicate over a network, supporting features like establishing connections, sending messages, listing active connections, and terminating connections. The application uses POSIX threads for concurrent handling of clients and servers, and it implements a reverse connection mechanism to ensure all nodes can communicate.
+- **Peer-to-Peer Communication**: Connect multiple instances running on different ports or machines.
+- **Reverse Connections**: Ensures full network connectivity by automatically establishing reverse connections.
+- **Multithreading**: Uses POSIX threads (`pthread`) to handle multiple clients concurrently.
+- **Command-Line Interface (CLI)**: Provides a simple CLI for user interaction.
+- **Connection Management**: List active connections, send messages, and terminate connections.
+- **Error Handling**: Robust error handling for socket operations, threading, and user input.
+- **Colorized Output**: Uses ANSI color codes to enhance console readability.
 
-This project was developed as a study on embedded Linux systems, focusing on network programming, multithreading, and inter-process communication.
+This project was developed as part of a study on **embedded Linux systems**, focusing on **network programming, multithreading, and inter-process communication**.
 
-## Features
-
-- Peer-to-Peer Communication: Connect multiple instances running on different ports or machines.
-- Reverse Connections: Automatically establishes reverse connections for full network connectivity.
-- Multithreading: Uses POSIX threads to handle multiple clients concurrently.
-- Command-Line Interface (CLI): Provides a simple CLI for interaction.
-- Connection Management:
-  - List active connections.
-  - Send messages to specific connections.
-  - Terminate connections.
-- Error Handling: Robust handling for socket operations, threading, and user input.
-- Colorized Output: Uses ANSI color codes for better console readability.
+---
 
 ## Prerequisites
+### Required Software & Libraries
+- **Operating System**: Linux (embedded Linux preferred, but works on any Linux distribution).
+- **Compiler**: GCC (GNU Compiler Collection).
+- **Libraries**:
+  - POSIX Threads (`pthread`) for multithreading.
+  - Standard C libraries (`stdio`, `stdlib`, `string`, etc.).
+  - Network libraries (`sys/socket.h`, `arpa/inet.h`, etc.).
+- **Build Tool**: `make` for compiling the project.
+- **Network Access**: Ensure the system has network access, and necessary ports are open.
 
-To build and run this application, you need:
-- Operating System: Linux (preferably embedded Linux, but works on any Linux distribution).
-- Compiler: GCC.
-- Libraries:
-  - POSIX Threads (pthread) for multithreading.
-  - Standard C libraries (stdio, stdlib, string, etc.).
-  - Network libraries (sys/socket.h, arpa/inet.h, etc.).
-- Build Tool: make.
-- Network Access: Ensure network access and ports are not blocked by a firewall.
+---
 
 ## Installation
+### Clone the Repository
+```bash
+git clone <repository-url>
+cd chat-application
+```
 
-1. Clone the Repository (if hosted on Git):
-   git clone <repository-url>
-   cd chat-application
+### Project Structure
+```plaintext
+chat-application/
+├── inc/               # Header files
+│   ├── cli.h
+│   ├── connection.h
+│   ├── network.h
+│   └── utils.h
+├── src/               # Source files
+│   ├── cli.c
+│   ├── connection.c
+│   ├── main.c
+│   ├── network.c
+│   └── utils.c
+├── Makefile           # Build script
+├── app                # Compiled executable (generated after building)
+└── README.md          # This file
+```
 
-2. Project Structure:
-   chat-application/
-   ├── inc/               # Header files
-   │   ├── cli.h
-   │   ├── connection.h
-   │   ├── network.h
-   │   └── utils.h
-   ├── src/               # Source files
-   │   ├── cli.c
-   │   ├── connection.c
-   │   ├── main.c
-   │   ├── network.c
-   │   └── utils.c
-   ├── Makefile           # Build script
-   ├── app                # Compiled executable (generated after building)
-   └── README.md          # This file
+### Build the Project
+```bash
+make
+```
+This will compile all source files and generate the executable **app**.
 
-3. Build the Project:
-   make
+### Clean the Build (Optional)
+```bash
+make clean
+```
 
-4. Clean the Build (Optional):
-   make clean
+---
 
 ## Usage
-
 ### Running the Application
+Start an instance by specifying a port number:
+```bash
+./app <port>
+```
+Example:
+```bash
+./app 4000
+./app 5000
+./app 6000
+```
 
-1. Start the Application:
-   Run the application by specifying a port number. Each instance must run on a unique port.
-   ./app <port>
-   Example:
-   - Terminal 1: ./app 4000
-   - Terminal 2: ./app 5000
-   - Terminal 3: ./app 6000
+### Available Commands
+| Command                | Description |
+|------------------------|-------------|
+| `help`                | Show available commands |
+| `connect <ip> <port>` | Connect to a peer at the specified IP and port |
+| `send <id> <message>` | Send a message to the specified connection ID |
+| `list`                | List all active connections |
+| `terminate <id>`      | Terminate the connection with the specified ID |
+| `exit`                | Exit the application gracefully |
 
-2. Available Commands:
-   - help: Displays the list of available commands.
-   - connect <ip> <port>: Connects to a peer at the specified IP and port.
-     Example: connect 127.0.0.1 5000
-   - send <id> <message>: Sends a message to the connection with the specified ID.
-     Example: send 0 Hello World
-   - list: Lists all active connections with their IDs, IPs, and ports.
-   - terminate <id>: Terminates the connection with the specified ID.
-     Example: terminate 0
-   - exit: Exits the application.
+### Example Scenario
+1. Start three instances:
+   ```bash
+   ./app 4000
+   ./app 5000
+   ./app 6000
+   ```
+2. In Terminal 1 (port 4000), connect to port 5000:
+   ```bash
+   connect 127.0.0.1 5000
+   ```
+   - This establishes a connection between 4000 and 5000.
+   - A reverse connection (5000 → 4000) is created.
+   - Port 6000 is notified and connects to 5000.
+3. List connections:
+   ```bash
+   list
+   ```
+   - Terminal 1: Shows connections to 5000 and 6000.
+   - Terminal 2: Shows connections to 4000 and 6000.
+   - Terminal 3: Shows connections to 4000 and 5000.
+4. Send messages:
+   ```bash
+   send 0 "Hello from 4000"
+   ```
+5. Terminate a connection:
+   ```bash
+   terminate 0
+   ```
+6. Exit the application:
+   ```bash
+   exit
+   ```
+   Or press `Ctrl+C` for graceful shutdown.
 
-3. Example Scenario:
-   - Start three instances:
-     - Terminal 1: ./app 4000
-     - Terminal 2: ./app 5000
-     - Terminal 3: ./app 6000
-   - In Terminal 1, connect to port 5000:
-     connect 127.0.0.1 5000
-   - List connections in each terminal:
-     list
-   - Send messages:
-     - Terminal 1: send 0 "Hello from 4000"
-     - Terminal 2: send 0 "Hello from 5000"
-     - Terminal 3: send 0 "Hello from 6000"
-   - Terminate a connection (e.g., in Terminal 1):
-     terminate 0
-   - Exit:
-     exit
-
-### Notes
-- Ensure ports (e.g., 4000, 5000) are not in use.
-- Use 127.0.0.1 for local testing. For different machines, use the target machine's IP.
-
-## Code Structure
-
-### Source Files (src/)
-- main.c: Entry point. Initializes server thread and handles user input.
-- cli.c: Implements the CLI (process_command, show_help).
-- network.c: Handles network operations (socket creation, connections, message sending).
-- connection.c: Manages active connections (init_connections, list_connections, terminate_connection).
-- utils.c: Utility functions (draw_border, show_title, get_my_ip).
-
-### Header Files (inc/)
-- cli.h: CLI function declarations.
-- connection.h: Connection structure and globals (connections, connection_count, conn_mutex).
-- network.h: Network function declarations and globals (server_socket, server_ports, server_mutex).
-- utils.h: Utility function declarations and ANSI color codes.
-
-### Key Mechanisms
-- Reverse Connections: Automatically creates reverse connections for full network connectivity.
-- Multithreading: Each client connection is handled in a separate thread.
-- Mutexes: Uses pthread_mutex_t for synchronized access to shared resources.
+---
 
 ## Troubleshooting
-
 ### 1. "Bind failed: Address already in use"
-   - Cause: Port is already in use.
-   - Solution:
-     1. Check processes using the port:
-        ss -tuln | grep 4000
-     2. Kill the process:
-        sudo lsof -i :4000
-        kill -9 <PID>
-     3. Use a different port:
-        ./app 4001
+**Cause:** The specified port is already in use.
+**Solution:**
+```bash
+ss -tuln | grep 4000  # Check if port is in use
+sudo lsof -i :4000    # Find process using the port
+kill -9 <PID>         # Kill the process
+```
+Alternatively, use a different port:
+```bash
+./app 4001
+```
 
 ### 2. "Connection failed"
-   - Cause: Target IP/port not reachable.
-   - Solution:
-     - Ensure the peer is running.
-     - Check network connectivity (ping 127.0.0.1).
-     - Verify firewall settings.
+**Cause:** Target IP/port is not reachable.
+**Solution:**
+- Ensure the peer application is running.
+- Check network connectivity:
+  ```bash
+  ping 127.0.0.1
+  ```
+- Verify firewall settings.
 
 ### 3. "Maximum connections reached"
-   - Cause: Exceeded MAX_CONNECTIONS limit.
-   - Solution:
-     - Terminate some connections: terminate <id>
-     - Increase MAX_CONNECTIONS in connection.h and recompile.
+**Cause:** Active connections exceed `MAX_CONNECTIONS`.
+**Solution:**
+- Terminate unused connections.
+- Increase `MAX_CONNECTIONS` in `connection.h` and recompile.
 
 ### 4. "Invalid connection ID"
-   - Cause: Specified ID is not active.
-   - Solution:
-     - Use list to check active IDs.
-     - Ensure the ID is correct.
+**Cause:** The specified ID does not exist.
+**Solution:**
+- Use `list` to check valid IDs.
+- Ensure correct ID when using `send` or `terminate`.
+
+---
 
 ## Future Improvements
+- **Message Persistence**: Store messages for history.
+- **Broadcast Messaging**: Send messages to all peers.
+- **Better IP Handling**: Improve `get_my_ip` functionality.
 
-- Add message persistence (store messages in a file).
-- Implement broadcast messaging (send to all peers).
-- Improve IP handling (select specific network interface).
-- Add GUI support (e.g., using GTK or Qt).
-- Add encryption (e.g., SSL/TLS).
-- Support IPv6 addresses.
-
-## Contributing
-
-1. Fork the repository.
-2. Create a branch:
-   git checkout -b feature-name
-3. Commit changes:
-   git commit -m "Add feature-name"
-4. Push to your fork:
-   git push origin feature-name
-5. Create a pull request.
+---
 
 ## License
+This project is licensed under the **MIT License**.
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+---
+
+## Author
+Developed as part of an **Embedded Linux Systems** study focusing on **network programming, multithreading, and inter-process communication**.
